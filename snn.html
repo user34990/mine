@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You ❤️</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: "Georgia", serif;
+      background:
+        radial-gradient(circle at top, #ffe1e9 0%, #f8b8c8 35%, #8f1837 100%);
+      color: #fff;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: fixed;
+      bottom: -30px;
+      color: rgba(255,255,255,0.7);
+      font-size: 20px;
+      animation: float 7s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.7);
+        opacity: 0;
+      }
+    }
+
+    /* Main screen */
+    .container {
+      text-align: center;
+      z-index: 5;
+      padding: 20px;
+    }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #fff5f7;
+      letter-spacing: 1px;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: .5; }
+    }
+
+    /* Bouquet */
+    .bouquet {
+      width: 260px;
+      height: 330px;
+      position: relative;
+      cursor: pointer;
+      transition: .5s ease;
+      filter: drop-shadow(0 20px 25px rgba(60,0,20,.35));
+    }
+
+    .bouquet:hover {
+      transform: scale(1.06) translateY(-5px);
+    }
+
+    .paper {
+      position: absolute;
+      width: 210px;
+      height: 220px;
+      left: 25px;
+      top: 85px;
+      background: linear-gradient(135deg, #fff4e8, #e8b88f);
+      clip-path: polygon(15% 0, 100% 18%, 82% 100%, 0 78%);
+      transform: rotate(-4deg);
+      z-index: 1;
+    }
+
+    .stem {
+      position: absolute;
+      width: 7px;
+      height: 170px;
+      background: #356b35;
+      bottom: 15px;
+      left: 126px;
+      transform: rotate(-2deg);
+      border-radius: 10px;
+      z-index: 2;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 55px;
+      height: 25px;
+      background: #3f813d;
+      border-radius: 100% 0 100% 0;
+      z-index: 3;
+    }
+
+    .leaf.one {
+      left: 65px;
+      bottom: 90px;
+      transform: rotate(25deg);
+    }
+
+    .leaf.two {
+      right: 45px;
+      bottom: 125px;
+      transform: rotate(155deg);
+    }
+
+    .rose {
+      position: absolute;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center,
+        #ffb1bd 0 12%,
+        #e92750 13% 27%,
+        #a90f36 28% 42%,
+        #ef3157 43% 60%,
+        #8e0c2e 61% 100%);
+      box-shadow:
+        inset 8px 8px 15px rgba(255,255,255,.2),
+        0 8px 15px rgba(80,0,20,.3);
+      z-index: 4;
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    .rose::before,
+    .rose::after {
+      content: "";
+      position: absolute;
+      width: 65%;
+      height: 65%;
+      border-radius: 50%;
+      border: 8px solid rgba(255,150,170,.3);
+      top: 17%;
+      left: 17%;
+    }
+
+    .rose::after {
+      width: 38%;
+      height: 38%;
+      top: 31%;
+      left: 31%;
+      border-color: rgba(100,0,25,.4);
+    }
+
+    .r1 { left: 91px; top: 30px; }
+    .r2 { left: 35px; top: 70px; transform: scale(.9); }
+    .r3 { right: 35px; top: 70px; transform: scale(.92); }
+    .r4 { left: 80px; top: 100px; transform: scale(.85); }
+    .r5 { right: 65px; top: 115px; transform: scale(.72); }
+
+    @keyframes breathe {
+      50% { transform: scale(1.04); }
+    }
+
+    /* Letter */
+    .letter {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: rgba(40,0,15,.72);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition: .6s ease;
+      z-index: 20;
+    }
+
+    .letter.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .paper-letter {
+      position: relative;
+      max-width: 650px;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 42px 32px;
+      border-radius: 20px;
+      background:
+        linear-gradient(135deg, #fffaf4, #ffe7ed);
+      color: #53152b;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,.45),
+        inset 0 0 30px rgba(255,150,170,.15);
+      transform: scale(.7) translateY(50px);
+      transition: .7s cubic-bezier(.17,.89,.32,1.25);
+    }
+
+    .letter.show .paper-letter {
+      transform: scale(1) translateY(0);
+    }
+
+    .close {
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      border: none;
+      background: none;
+      color: #9e1740;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    h1 {
+      text-align: center;
+      color: #a30d3a;
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+
+    .message {
+      font-size: 18px;
+      line-height: 1.9;
+      text-align: left;
+    }
+
+    .highlight {
+      color: #c3164d;
+      font-weight: bold;
+    }
+
+    .signature {
+      text-align: right;
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #9b123d;
+    }
+
+    .closing {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 20px;
+      color: #c3164d;
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      .paper-letter {
+        padding: 35px 22px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      .message {
+        font-size: 16px;
+        line-height: 1.8;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Floating hearts -->
+  <div class="heart" style="left:10%; animation-delay:0s;">❤️</div>
+  <div class="heart" style="left:25%; animation-delay:2s;">💗</div>
+  <div class="heart" style="left:45%; animation-delay:4s;">💕</div>
+  <div class="heart" style="left:70%; animation-delay:1s;">❤️</div>
+  <div class="heart" style="left:88%; animation-delay:3s;">💖</div>
+
+  <div class="container">
+
+    <!-- Bouquet -->
+    <div class="bouquet" onclick="openLetter()">
+
+      <div class="paper"></div>
+
+      <div class="stem"></div>
+
+      <div class="leaf one"></div>
+      <div class="leaf two"></div>
+
+      <div class="rose r1"></div>
+      <div class="rose r2"></div>
+      <div class="rose r3"></div>
+      <div class="rose r4"></div>
+      <div class="rose r5"></div>
+
+    </div>
+
+    <div class="hint">🌹 Tap the bouquet 🌹</div>
+
+  </div>
+
+  <!-- Love Letter -->
+  <div class="letter" id="letter">
+
+    <div class="paper-letter">
+
+      <button class="close" onclick="closeLetter()">×</button>
+
+      <h1>For The Most Special Person ❤️</h1>
+
+      <div class="message">
+
+        <p>
+          Pata hai… kuch log hamari life mein bas aate hain,
+          aur kuch log <span class="highlight">hamari life ka ek khoobsurat hissa ban jaate hain.</span>
+          Tum mere liye wahi ho. ❤️
+        </p>
+
+        <br>
+
+        <p>
+          Tum meri <span class="highlight">sabse pyaari cheezon mein se ek ho</span>,
+          aur mere dil ke bahut, bahut kareeb ho.
+          Shayad main har baar words mein explain nahi kar pata,
+          lekin jo feelings mere dil mein tumhare liye hain,
+          woh mere liye bahut special hain.
+        </p>
+
+        <br>
+
+        <p>
+          Aur please… tum chhoti-chhoti baaton par mujhse naraz
+          mat hua karo. 🥺
+          Tumhari narazgi mujhe andar se bahut hurt karti hai.
+          Agar kabhi mujhse koi galti ho jaaye,
+          toh mujhse baat kar lena,
+          daant lena,
+          lekin mujhse door mat jaana.
+        </p>
+
+        <br>
+
+        <p>
+          Kabhi kabhi main sochta hoon…
+          <span class="highlight">agar main chala gaya toh tum kya karogi?</span>
+          Kaun tumhe itna pareshan karega?
+          Kaun tumhe baar-baar manayega?
+          Kaun tumhari chhoti-chhoti baaton ko notice karega?
+          Aur kaun tumhari smile dekhne ke liye
+          itna pagal hoga? ❤️
+        </p>
+
+        <br>
+
+        <p>
+          I know you love me a lot…
+          aur sach bolun toh,
+          <span class="highlight">I love you so, so, so much too.</span>
+          Shayad jitna main keh pata hoon,
+          usse kahin zyada.
+        </p>
+
+        <br>
+
+        <p>
+          Tumhare saath bitaya hua har little moment,
+          har conversation,
+          har smile,
+          aur har chhoti si nok-jhok…
+          mere liye special hai.
+        </p>
+
+        <br>
+
+        <p>
+          Main bas itna chahta hoon ki chahe life mein
+          kitni bhi problems aayein,
+          hum ek dusre ka haath kabhi na chhodein.
+          Naraz ho jaana, lad lena,
+          par ek dusre ko khona mat. 🥺❤️
+        </p>
+
+        <div class="closing">
+          "You are not just someone I love…<br>
+          You are someone I never want to lose." ❤️
+        </div>
+
+        <div class="signature">
+          Forever yours,<br>
+          Sahil Yadav ❤️
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    function openLetter() {
+      document.getElementById("letter").classList.add("show");
+    }
+
+    function closeLetter() {
+      document.getElementById("letter").classList.remove("show");
+    }
+  </script>
+
+</body>
+</html>
